@@ -30,8 +30,8 @@ if ($result_court->num_rows > 0) {
     $slot_id = $row_slot['slotID'];
 
     // Insert data into the database
-    $sql_booking = "INSERT INTO booking (userID, courtID, slotID, bookDate, createDate, bookingStatus)
-                        VALUES ($user_id, $court_id, $slot_id, '$booking_date', NOW(), 'Confirmed')";
+    $sql_booking = "INSERT INTO booking (userID, courtID, slotID, bookDate, createDate)
+                        VALUES ($user_id, $court_id, $slot_id, '$booking_date', NOW())";
 
     if ($conn->query($sql_booking) === TRUE) {
       echo "Booking successful!";
