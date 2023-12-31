@@ -1,17 +1,15 @@
 <?php
 
 // Include the database connection file
-global $conn;
 include 'dbconnect.php'; // Update this with your actual connection file
 
 // Retrieve form data
+$user_id = $_POST['user_id'];
 $booking_date = $_POST['booking-date'];
 $booking_time = $_POST['booking-time'];
 $sport_type = $_POST['sport-type'];
 $court_number = $_POST['court-number'];
 
-// TODO: Authenticate the user and obtain the actual user ID dynamically
-$user_id = 7; // Replace this with the actual user ID
 
 // Get courtID based on the selected sport type and court number
 $sql_court = "SELECT courtID FROM court WHERE sportName = '$sport_type' AND courtNo = $court_number";

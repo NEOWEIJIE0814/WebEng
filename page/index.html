@@ -222,6 +222,41 @@
 </head>
 
 <body>
+  <script>
+    // Function to get URL parameter by name
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    // Get the userID from the URL
+    var userID = getParameterByName('userID');
+
+    // Update the links dynamically
+    document.addEventListener('DOMContentLoaded', function () {
+      var badmintonLink = document.querySelector('.court-item a[href="badmintoncourt_page.html"]');
+      var tennisLink = document.querySelector('.court-item a[href="tenniscourt_page.html"]');
+      var squashLink = document.querySelector('.court-item a[href="squashcourt_page.html"]');
+
+      if (badmintonLink) {
+        badmintonLink.href = "badmintoncourt_page.html?userID=" + userID;
+      }
+
+      if (tennisLink) {
+        tennisLink.href = "tenniscourt_page.html?userID=" + userID;
+      }
+
+      if (squashLink) {
+        squashLink.href = "squashcourt_page.html?userID=" + userID;
+      }
+    });
+  </script>
+
 
 <div class="navbar">
   <img src="../img/UUM_logo.png" alt="Logo">
@@ -336,6 +371,8 @@
 
       setInterval(switchAnnouncement, 5000); // Switch to the next announcement every 5 seconds
     }
+
+    
 
     document.addEventListener('DOMContentLoaded', setupAnnouncements);
   </script>

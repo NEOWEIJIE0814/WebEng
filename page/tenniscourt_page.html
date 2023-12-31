@@ -412,7 +412,45 @@
   <div id="booking-form">
     <label for="booking-date">Select Date:</label>
     <input type="date" id="booking-date" required>
+    <input type="hidden" id="user_id" name="user_id" value="userID">
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+         let currentIndex = 0;
+         const announcements = document.querySelectorAll('.announcement');
+         const totalAnnouncements = announcements.length;
+     
+         function changeAnnouncement() {
+           const nextIndex = (currentIndex + 1) % totalAnnouncements;
+           announcements[currentIndex].style.transform = `translateX(-${100 * nextIndex}%)`;
+           announcements[nextIndex].style.transform = `translateX(-${100 * nextIndex}%)`;
+           currentIndex = nextIndex;
+         }
+     
+         setInterval(changeAnnouncement, 5000); // Change announcement every 5 seconds
+     
+         // Get the userID from the URL
+         var userID = getParameterByName('userID');
+         console.log("UserID:", userID);
+         
 
+         // Set the user_id value in the hidden input field
+         document.getElementById("user_id").value = userID;
+
+         console.log(user_id);
+       });
+     
+       // Function to get a parameter from the URL by name
+       function getParameterByName(name, url) {
+         if (!url) url = window.location.href;
+         name = name.replace(/[\[\]]/g, "\\$&");
+         var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+           results = regex.exec(url);
+         if (!results) return null;
+         if (!results[2]) return '';
+         return decodeURIComponent(results[2].replace(/\+/g, " "));
+       }
+      
+     </script>
     <label for="booking-time">Select Time:</label>
     <select id="booking-time" required>
       <!-- Generate time slots from 8 am to 8 pm with 1-hour intervals -->
@@ -607,51 +645,55 @@
     const time = document.getElementById('booking-time').value;
     const sport = document.getElementById('sport-type').value;
     const court = document.getElementById('court-number').value;
+    const userId = document.getElementById('user_id').value;
 
     // Send an AJAX request to check availability
     const availabilityXhr = new XMLHttpRequest();
     availabilityXhr.onreadystatechange = function () {
-      if (availabilityXhr.readyState === XMLHttpRequest.DONE) {
-        if (availabilityXhr.status === 200) {
-          const response = JSON.parse(availabilityXhr.responseText);
-          if (response.available) {
-            // If the slot is available, proceed with the booking
-            // Create a FormData object and append form data
-            const formData = new FormData();
-            formData.append("booking-date", date);
-            formData.append("booking-time", time);
-            formData.append("sport-type", sport);
-            formData.append("court-number", court);
+        if (availabilityXhr.readyState === XMLHttpRequest.DONE) {
+            if (availabilityXhr.status === 200) {
+                const response = JSON.parse(availabilityXhr.responseText);
+                if (response.available) {
+                    // If the slot is available, proceed with the booking
+                    // Create a FormData object and append form data
+                    const formData = new FormData();
+                    formData.append("booking-date", date);
+                    formData.append("booking-time", time);
+                    formData.append("sport-type", sport);
+                    formData.append("court-number", court);
+                    formData.append("user_id", userId); // Include the user ID
 
-            // Send an AJAX request to process the booking
-            const bookingXhr = new XMLHttpRequest();
-            bookingXhr.open("POST", "php/process_booking.php", true);
-            bookingXhr.onload = function () {
-              if (bookingXhr.status === 200) {
-                // Handle the successful response
-                const bookingStatus = document.getElementById('booking-status');
-                bookingStatus.textContent = bookingXhr.responseText;
-              } else {
-                // Handle errors
-                alert("Error: " + bookingXhr.statusText);
-              }
-            };
-            bookingXhr.send(formData);
-          } else {
-            // Display a message indicating the slot is not available
-            const bookingStatus = document.getElementById('booking-status');
-            bookingStatus.textContent = "Error: Slot already booked. Please choose another time or court.";
-          }
-        } else {
-          console.error("Error checking availability: " + availabilityXhr.status);
+                    // Send an AJAX request to process the booking
+                    const bookingXhr = new XMLHttpRequest();
+                    bookingXhr.open("POST", "php/process_booking.php", true);
+                    bookingXhr.onload = function () {
+                        if (bookingXhr.status === 200) {
+                            // Handle the successful response
+                            const bookingStatus = document.getElementById('booking-status');
+                            bookingStatus.textContent = bookingXhr.responseText;
+                        } else {
+                            // Handle errors
+                            alert("Error: " + bookingXhr.statusText);
+                        }
+                    };
+                    bookingXhr.send(formData);
+                } else {
+                    // Display a message indicating the slot is not available
+                    const bookingStatus = document.getElementById('booking-status');
+                    bookingStatus.textContent = "Error: Slot already booked. Please choose another time or court.";
+                }
+            } else {
+                console.error("Error checking availability: " + availabilityXhr.status);
+            }
         }
-      }
     };
 
     availabilityXhr.open('POST', 'php/check_availability.php', true);
     availabilityXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    availabilityXhr.send(`date=${date}&time=${time}&sport=${sport}&court=${court}`);
-  }
+
+    // Include userID in the data sent to the server
+    availabilityXhr.send(`date=${date}&time=${time}&sport=${sport}&court=${court}&userID=${userId}`);
+}
 </script>
 </body>
 </html>
