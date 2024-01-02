@@ -242,6 +242,7 @@
       var badmintonLink = document.querySelector('.court-item a[href="badmintoncourt_page.html"]');
       var tennisLink = document.querySelector('.court-item a[href="tenniscourt_page.html"]');
       var squashLink = document.querySelector('.court-item a[href="squashcourt_page.html"]');
+      var manageaccLink = document.querySelector('.navbar a[href="manageacc_page.html"]');
 
       if (badmintonLink) {
         badmintonLink.href = "badmintoncourt_page.html?userID=" + userID;
@@ -254,6 +255,9 @@
       if (squashLink) {
         squashLink.href = "squashcourt_page.html?userID=" + userID;
       }
+      if (manageaccLink) {
+        manageaccLink.href = "manageacc_page.html?userID=" + userID;
+      }
     });
   </script>
 
@@ -261,8 +265,8 @@
 <div class="navbar">
   <img src="../img/UUM_logo.png" alt="Logo">
   <div>
-    <a href="signup_page.html" style="color: white; padding: 0 10px;">Sign Up</a>
-    <a href="login_page.html" style="color: white; padding: 0 10px;">Log In</a>
+    <a href="manageacc_page.html" style="color: white; padding: 0 10px;">View Account</a>
+    <a href="login_page.html" style="color: white; padding: 0 10px;">Log out</a>
   </div>
 </div>
 

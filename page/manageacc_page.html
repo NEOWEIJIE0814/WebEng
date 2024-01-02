@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Account</title>
+  <!-- Include your CSS stylesheets here -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    h1 {
+      color: #ffcc00;
+      text-align: center;
+    }
+
+    p {
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #view_reservation {
+      margin-bottom: 20px;
+    }
+
+    .center-container {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  cursor: pointer;
+  margin: 1%;
+  
+  /* Additional styles for the button, if needed */
+}
+  </style>
+</head>
+
+<body>
+
+  <h1>View Your Account</h1>
+
+  <!-- Display user information -->
+  <p><strong>Name:</strong> <span id="user_name"></span></p>
+  <p><strong>Matric No:</strong> <span id="user_matricNo"></span></p>
+  <p><strong>Phone No:</strong> <span id="user_phoneNo"></span></p>
+  <p><strong>Email:</strong> <span id="user_email"></span></p>
+
+  <!-- Buttons for updating and deleting profile -->
+  <div>
+    <div class="center-container">
+      <input type="hidden" id="user_id" name="user_id" value="userID">
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          let currentIndex = 0;
+          const announcements = document.querySelectorAll('.announcement');
+          const totalAnnouncements = announcements.length;
+
+          // Get the userID from the URL
+          var userID = getParameterByName('userID');
+          console.log("UserID:", userID);
+
+          // Set the user_id value in the hidden input field
+          document.getElementById("user_id").value = userID;
+
+          console.log(userID);
+        });
+
+        // Function to get a parameter from the URL by name
+        function getParameterByName(name, url) {
+          if (!url) url = window.location.href;
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+      </script>
+      <button onclick="viewProfile()"class="btn btn-primary">View Profile</button>
+      <button onclick="navigateToIndex()"class="btn btn-primary"F>Back</button>
+    </div>
+
+  </div>
+
+  <!-- Include your additional HTML content and scripts here -->
+
+  <script>
+    // JavaScript functions for handling button actions
+
+    function viewProfile() {
+      // Get the user_id from the hidden input field
+      const userID = document.getElementById('user_id').value;
+
+      // Check if user_id is available
+      if (userID) {
+        // Create a FormData object and append the user_id
+        const formData = new FormData();
+        formData.append("user_id", userID);
+
+        // Create an AJAX request
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "php/user_read.php", true);
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            // Handle the successful response
+            try {
+              // Parse the JSON response
+              const userData = JSON.parse(xhr.responseText);
+
+              // Update the displayed information
+              document.getElementById('user_name').innerText = userData.name;
+              document.getElementById('user_matricNo').innerText = userData.matricNo;
+              document.getElementById('user_phoneNo').innerText = userData.phoneNo;
+              document.getElementById('user_email').innerText = userData.email;
+            } catch (error) {
+              console.error("Error parsing JSON: " + error);
+            }
+          } else {
+            // Handle errors
+            console.error("Error: " + xhr.statusText);
+          }
+        };
+        xhr.send(formData);
+      } else {
+        alert("UserID not provided.");
+      }
+    }
+
+    // Function to navigate to the index.html page
+    function navigateToIndex() {
+      const userID = document.getElementById('user_id').value;
+
+      // You can adjust the path to match the location of your index.html file
+      window.location.href = 'index.html?userID=' + userID;
+    }
+
+    
+
+  </script>
+   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
